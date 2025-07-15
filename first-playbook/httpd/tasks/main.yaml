@@ -1,0 +1,27 @@
+---
+- hosts: all
+  become: true
+  tasks:
+    - name: Install apache httpd
+      ansible.builtin.apt:
+        name: apache2
+        state: present
+        update_cache: yes
+    - name: Copy file with owner and permissions
+      ansible.builtin.copy:
+        src: /files/index.html
+        dest: /var/www/html
+        owner: root
+        group: root
+        mode: '0644'
+    - name: Print a variable using debug
+      ansible.builtin.debug:
+        msg: "The variable is: {{ my_variable }}"
+      vars:
+        my_variable: "Hello, World!"
+    - name: Ensure apache is running
+      ansible.builtin.service:
+        name: apache2
+        state: started
+        enabled: true
+
