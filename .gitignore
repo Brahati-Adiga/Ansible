@@ -1,0 +1,4 @@
+project-1/vault.pass
+project-1/group_vars/all/pass.yml
+ec2/vault.pass
+ec2/group_vars/all/pass.yml
