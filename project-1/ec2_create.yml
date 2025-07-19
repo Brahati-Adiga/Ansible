@@ -1,0 +1,38 @@
+- hosts: localhost
+  connection: local
+  tasks:
+    - name: Create a security group
+      amazon.aws.ec2_security_group:
+        name: "ubuntu-amazon-sg"
+        description: "Security group for Ubuntu and Amazon instances"
+        region: us-east-1
+        aws_access_key: "{{ec2_access_key}}" 
+        aws_secret_key: "{{ec2_secret_key}}"
+        rules:
+          - proto: tcp
+            ports: 22
+            cidr_ip: "0.0.0.0/0"
+            rule_desc: "Allow SSH access from anywhere"
+
+    - name: Create ec2 instance
+      amazon.aws.ec2_instance:
+        name: "{{ item.name }}"
+        instance_type: t2.micro
+        region: us-east-1
+        key_name: "node-1"
+        security_group: "ubuntu-amazon-sg"
+        network:
+          assign_public_ip: true
+        aws_access_key: "{{ ec2_access_key }}"  
+        aws_secret_key: "{{ ec2_secret_key }}"
+        image_id: "{{ item.image }}"
+        tags:
+          Environment: "{{ item.name }}"
+      loop:
+        - { image: "ami-020cba7c55df1f615", name: "ubuntu-instance-1" }
+        - { image: "ami-020cba7c55df1f615", name: "ubuntu-instance-2" }
+        - { image: "ami-0150ccaf51ab55a51", name: "amazon-instance-1" }
+
+
+      
+
